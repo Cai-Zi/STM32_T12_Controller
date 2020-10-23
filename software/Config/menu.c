@@ -7,15 +7,15 @@
 #include "delay.h"
 #include "usart.h"
 #include "pid.h"
-
+#include "adc.h"
+#include "main.h"
 /*https://blog.csdn.net/embedded_guzi/article/details/35835755
 https://blog.csdn.net/calmuse/article/details/79346742
 */
-u8 volatile sleepFlag = 0;//是否休眠
-u8 volatile shutFlag = 0;//是否休眠
+u8 volatile sleepFlag = 0;//是否休眠,1为休眠
+u8 volatile shutFlag = 0;//是否休眠,1为关机
 u8 volatile nowMenuIndex = 0;
 u8 volatile lastMenuIndex = 0;
-u8 volatile heatFlag = 1;//是否加热
 extern unsigned char logo[];
 extern unsigned char logoR[];
 char batVoltStr[10]={0};
@@ -85,15 +85,20 @@ void homeWindow(void)
 	getClockTime(timeStr);
 	OLED_ShowString(0,0,(u8*)timeStr,16,0);//时间00:00:00
 	char tempStr[4];//温度字符串
-	sprintf((char *)tempStr,"%d",setData.setTemp);//组合时间字符串
+	sprintf((char *)tempStr,"%d",setData.setTemp);//组合温度字符串
 	OLED_ShowString(88,0, (u8 *)tempStr,16,0);//设置温度
-	OLED_DrawPointBMP(112,1,tempSign,16,16,0);//℃
+	OLED_DrawPointBMP(112,0,tempSign,16,16,0);//℃
 	OLED_Fill(0,15,127,15,1);//水平分割线
-	OLED_DrawPointNum(0,17,2*6,1);//当前温度-百位
-	OLED_DrawPointNum(25,17,8*6,1);//当前温度-十位
-	OLED_DrawPointNum(50,17,0*6,1);//当前温度-个位
+	u16 bai,shi,ge;
+	bai = (u16)T12_temp/100;
+	shi = (u16)T12_temp%100/10;
+	ge = (u16)T12_temp%10;
+	OLED_DrawPointNum(0,17,bai*6,1);//当前温度-百位
+	OLED_DrawPointNum(25,17,shi*6,1);//当前温度-十位
+	OLED_DrawPointNum(50,17,ge*6,1);//当前温度-个位
 	OLED_DrawPointBMP(78,24,tempSign,16,16,1);//℃
-	if(heatFlag){
+	OLED_ShowNum(78,48,(u16)NTC_temp,2,16);//手柄温度
+	if(HEAT){
 		OLED_DrawPointBMP(110,24,heatSign,16,16,1);//加热标志
 		OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
 	}
@@ -103,7 +108,7 @@ void homeWindow(void)
 	}
 	else{
 		OLED_Fill(110,24,126,40,0);//清空标志
-		OLED_ShowString(104,48, (u8 *)"OFF",16,1);//加热设置
+		OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
 	}
 }
 
@@ -227,7 +232,6 @@ void menu_gybjTip(void){
 	OLED_ShowString(32,0,(u8*)": ",16,1);
 	u8 czIndex[] = {40,41};
 	OLED_ShowChineseWords(48,0,czIndex,2,1);
-	OLED_ShowString(80,0,(u8*)"CaiZi",16,1);
 	
 	u8 rqIndex[] = {35,36};
 	OLED_ShowChineseWords(0,16,rqIndex,2,1);

@@ -4,6 +4,7 @@
 #include "usart.h"
 #include "key.h"
 #include "menu.h"
+#include "setting.h"
 
 #define DBGMCU_CR  (*((volatile u32 *)0xE0042004))
 u16 timecount,g_bPIDRunFlag;
@@ -18,22 +19,22 @@ volatile u32 shutCount = 0;
 //PID参数初始化
 void PID_Setup(void)
 {
-	ki = sampleT/60.0;//积分参数
-	kp = 20.0;//比例参数，设置调节力度T/Ti，可以消除稳态误差
-	kd = 40/sampleT;//微分参数Td/T，可以预测误差的变化，做到提前决策
-	st = 20;//设定目标温度
+	kp = 40.0;//比例参数，设置调节力度
+	ki = sampleT/50.0;//积分参数T/Ti，可以消除稳态误差
+	kd = 180/sampleT;//微分参数Td/T，可以预测误差的变化，做到提前决策
 }
 //计算PID输出uk
 void PID_Operation(void)
 {
-	pt = readThermistor();//当前温度值
-	e0=st-pt;
-	if(e0>10) uk = 100;//温差>10℃时，全速加热
+	pt = get_T12_temp();//当前温度值
+	T12_temp = pt;
+	e0=setData.setTemp-pt;
+	if(e0>100) uk = 100;//温差>10℃时，全速加热
 	else//否则进行PID解算
 	{
 		duk=kp*(e0-e1)+kp*ki*e0+kp*kd*(e0-2*e1+e2);
 		uk=uk+duk;
-		if(uk>100) uk=100;//防止饱和
+		if(uk>50) uk=100;//防止饱和
 		if(uk<0) uk=0;
 	}
 	e2=e1;
@@ -48,13 +49,18 @@ void PID_Operation(void)
 void PID_Output(void)
 {
 	if(uk <= 0)
+	{
 		HEAT=0; //不加热
-	else if(heatFlag) HEAT = 1;//加热
+	}
+	else if(sleepFlag==0&&shutFlag==0) 
+	{
+		HEAT = 1;//加热
+	}
 	else HEAT=0; //不加热
 	if(uk) uk--;                //只有uk>0，才有必要减“1”
 //	if(timecount%10==0) printf("uk:%d,e0:%2.1f,e1:%2.1f,e2:%2.1f\r\n",uk,e0,e1,e2);
 	timecount++;
-	if(timecount >= 100)
+	if(timecount >= sampleT)
 	{
 		PID_Operation();        //每过0.1*100s调用一次PID运算。
 		timecount = 0;       
@@ -116,7 +122,7 @@ void TIM4_IRQHandler(void)
 
 void getClockTime(char timeStr[])
 {
-	u8 hour=0,min=0,sec=0;
+	u32 hour=0,min=0,sec=0;
 	sec = nowTime/100;
 	hour = sec/3600;
 	min = sec%3600/60;

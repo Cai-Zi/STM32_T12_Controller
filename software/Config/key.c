@@ -58,7 +58,6 @@ void TIM3_IRQHandler(void)   //TIM3中断服务函数
 			{
 				menuEvent[0]=1;//菜单事件
 				menuEvent[1]=KEY_enter; //旋转编码器短按
-				if(nowMenuIndex == home) heatFlag = !heatFlag;
 			}
 			if(status==KEY_LONG)
 			{

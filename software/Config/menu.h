@@ -38,7 +38,6 @@ typedef struct{
 
 extern volatile u8 nowMenuIndex;
 extern volatile u8 lastMenuIndex;
-extern volatile u8 heatFlag;
 extern volatile u8 sleepFlag;
 extern volatile u8 shutFlag;
 
