@@ -1,6 +1,6 @@
 #include "beeper.h"
 #include "delay.h"
-	    
+#include "main.h"
 //蜂鸣器IO初始化
 void BEEPER_Init(void)
 {
@@ -19,7 +19,12 @@ void BEEPER_Init(void)
 //蜂鸣器短响一次
 void beeperOnce(void)
 {
-	Beeper = 1;
-	delay_ms(5);
-	Beeper = 0;
+	if (setData.beeperFlag) {
+		for (u8 i=0; i<255; i++) {
+			Beeper = 1;
+			delay_us(125);
+			Beeper = 0;
+			delay_us(125);
+		}
+	}
 }

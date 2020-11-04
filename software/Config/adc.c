@@ -11,7 +11,11 @@
    http://www.thermistors.cn/news/293.html
 */ 
 #define sampleNum 10
-
+// 默认烙铁头温度校准值
+#define TEMP100 790 // 100℃时的ADC值
+#define TEMP200 1560 // 200℃时的ADC值
+#define TEMP300 2830 // 300℃时的ADC值
+#define TEMP420 4090 // 400℃时的ADC值
 float ADC_max = 4095.0; //最大采样值，12位ADC
 /*使用beta方程计算阻值。*/ 
 float beta = 3950.0; //商家给出的电阻对应25°C下的bata值
@@ -22,15 +26,6 @@ float currentTemperature = 0; //保存当前温度
 u16 ch1Value[2*sampleNum];//ADC采样值
 u16 NTC_Average=0;
 u16 T12_Average=0;
-u16 S_temp2Volt[]={
-	0,55,113,173,235,299,365,432,502,573,//0~90℃
-	645,719,795,872,950,1029,1109,1190,1273,1356,//100~190℃
-	1440,1525,1611,1698,1785,1873,1962,2051,2141,2232,
-	2323,2414,2506,2599,2692,2786,2880,2974,3069,3164,
-	3260,3356,3452,3549,3645,3743,3840,3938,4036,4135,
-	4234,4333,4432,4532,4632,4732,4832,4933,5034,5136,//500~590℃
-	5237,5339,5442,5544,5648,5751,5855,5960,6065,6169};//S型热电偶分度表，单位：uV，参考温度：0℃
-u16 S_caliVolt[]={0,55,113,173,235,299};//S型热电偶参考端温度0~50℃时的校正值，实际电压-校正值，再查分度表表
 #define ADC1_DR_Address    ((u32)0x4001244C)		//ADC1的地址
 
 //初始化ADC-PA0引脚
@@ -42,13 +37,13 @@ void  Adc_Init(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);	  //使能GPIOA时钟
 
 	//PA6 作为模拟通道输入引脚   
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4|GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4|GPIO_Pin_6;//NTC和T12的温度检测引脚
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);  
 	
 	
-	GPIO_InitStructure.GPIO_Pin = SLEEP_Pin;
+	GPIO_InitStructure.GPIO_Pin = SLEEP_Pin;//振动开关引脚
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(SLEEP_GPIO_Port, &GPIO_InitStructure);  
 	
@@ -151,36 +146,47 @@ u16 get_NTC_temp(void)
   tCelsius = tKelvin  -  273.15; //将开尔文转换为摄氏温度
   return tCelsius;//以摄氏度返回温度
 }
-//获取热电偶的电压，根据分度表转换为温度
-u16 get_T12_temp(void)
+
+//获取功放的ADC采样值
+void get_T12_ADC(void)
 {
-	u16 nowTemp,nowIndex;
-	u16 nowVolt,nowCaliVolt;
 	if(HEAT) 
 	{
 		HEAT=0;//先停止加热
-		delay_ms(1);
-		T12_Average = Get_Adc_Average(4,10);//获取采样值
+		delay_ms(1);//等待电压稳定
+		T12_Average = Get_Adc_Average(4,10);//获取功放的采样值
 		HEAT=1;//继续加热
 	}
-	else T12_Average = Get_Adc_Average(4,10);//获取采样值
-	nowCaliVolt = S_caliVolt[(u16)NTC_temp/10]+(NTC_temp%10)*(S_caliVolt[(u16)NTC_temp/10+1]-S_caliVolt[(u16)NTC_temp/10])/10;
-	nowVolt = T12_Average*3.3*2000/4095-nowCaliVolt;//热电偶当前电压uV
-	nowIndex = SearchIndex(S_temp2Volt,0,70,nowVolt);
-	nowTemp = nowIndex*10+10*(nowVolt-S_temp2Volt[nowIndex])/(S_temp2Volt[nowIndex+1]-S_temp2Volt[nowIndex]);
-//	printf("%d℃\r\n",nowTemp);
-	return nowTemp;//以摄氏度返回温度
+	else 
+	{
+		delay_ms(1);//等待电压稳定
+		T12_Average = Get_Adc_Average(4,10);//获取功放的采样值
+	}
 }
-
-u16 get_sleepSign(void)
+//获取热电偶的电压，根据分度表转换为温度
+u16 get_T12_temp(void)
+{
+	u16 CurrentTemp=0;
+	get_T12_ADC();
+	if(T12_Average < TEMP100) CurrentTemp = (u16)map (T12_Average,21,TEMP100, 0, 100);
+	else if(T12_Average < TEMP200) CurrentTemp = (u16)map (T12_Average,TEMP100,TEMP200, 100, 200);
+	else if(T12_Average < TEMP300) CurrentTemp = (u16)map (T12_Average,TEMP200,TEMP300, 200, 300);
+	else CurrentTemp = (u16)map (T12_Average,TEMP300,TEMP420, 300, 420);
+//	printf("温度:%d\r\n",CurrentTemp);
+	return CurrentTemp;//以摄氏度返回温度
+}
+//获取振动开关的状态
+u16 sleepCheck(void)
 {
 	u16 nowSleep;
 	nowSleep = SLEEP;
 	if(nowSleep==0)
 	{
-		sleepCount=0;
+		sleepFlag = 0;//关闭睡眠模式
+		sleepCount = 0;
 		shutCount = 0;
 	}
-//	printf("%d\r\n",nowSleep);
 	return nowSleep;
 }
+
+

@@ -6,6 +6,17 @@ extern "C" {
 	
 #include "sys.h"
 #include "stm32f10x.h"
+#include "key.h"
+#include "delay.h"
+#include "usart.h"
+#include "max6675.h"
+#include "pid.h"
+#include "adc.h"
+#include "beeper.h"
+#include "flash.h"
+#include "menu.h"
+#include "oled.h"
+#include "setting.h"
 
 #define HEAT_Pin GPIO_Pin_0
 #define HEAT_GPIO_Port GPIOA

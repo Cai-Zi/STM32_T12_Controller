@@ -9,19 +9,23 @@
 #define DBGMCU_CR  (*((volatile u32 *)0xE0042004))
 u16 timecount,g_bPIDRunFlag;
 int uk,duk;//uk为当前输出值，duk为PID增量
-float kp,ki,kd;
+float aggKp,aggKi,aggKd;//激进的PID参数
+float consKp,consKi,consKd;//保守的PID参数
 float e0,e1,e2;
 float st,pt;
-u16 sampleT=100;//采样周期100
+u16 sampleT=255;//采样周期100
 volatile u32 nowTime = 0;//程序运行时间，单位0.01s
 volatile u32 sleepCount = 0;
 volatile u32 shutCount = 0;
 //PID参数初始化
 void PID_Setup(void)
 {
-	kp = 40.0;//比例参数，设置调节力度
-	ki = sampleT/50.0;//积分参数T/Ti，可以消除稳态误差
-	kd = 180/sampleT;//微分参数Td/T，可以预测误差的变化，做到提前决策
+	aggKp = 11;//比例参数，设置调节力度
+	aggKi = 0.5;//积分参数T/Ti，可以消除稳态误差
+	aggKd = 1;//微分参数Td/T，可以预测误差的变化，做到提前决策
+	consKp=11;//保守的PID参数
+	consKi=3;
+	consKd=5;
 }
 //计算PID输出uk
 void PID_Operation(void)
@@ -29,14 +33,18 @@ void PID_Operation(void)
 	pt = get_T12_temp();//当前温度值
 	T12_temp = pt;
 	e0=setData.setTemp-pt;
-	if(e0>100) uk = 100;//温差>10℃时，全速加热
-	else//否则进行PID解算
+	if(e0>50)//温差>50℃时，进行激进的PID解算
 	{
-		duk=kp*(e0-e1)+kp*ki*e0+kp*kd*(e0-2*e1+e2);
+		duk=aggKp*(e0-e1)+aggKp*aggKi*e0+aggKp*aggKd*(e0-2*e1+e2);
 		uk=uk+duk;
-		if(uk>50) uk=100;//防止饱和
-		if(uk<0) uk=0;
 	}
+	else//温差<30℃时，进行保守的PID解算
+	{
+		duk=consKp*(e0-e1)+consKp*consKi*e0+consKp*consKd*(e0-2*e1+e2);
+		uk=uk+duk;
+	}
+	if(uk>sampleT) uk=sampleT;//防止饱和
+	if(uk<0) uk=0;
 	e2=e1;
 	e1=e0;
 }
@@ -62,7 +70,7 @@ void PID_Output(void)
 	timecount++;
 	if(timecount >= sampleT)
 	{
-		PID_Operation();        //每过0.1*100s调用一次PID运算。
+		PID_Operation();        //每过0.1*255s调用一次PID运算。
 		timecount = 0;       
 	}
 }
@@ -77,12 +85,8 @@ void HEAT_Init(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(HEAT_GPIO_Port, &GPIO_InitStructure);
 	GPIO_SetBits(HEAT_GPIO_Port,HEAT_Pin);//拉低
-	
-	//STM32没有彻底释放PB3作为普通IO口使用，切换到SW调试可释放PB3、PB4、PA15
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
-	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);
-	DBGMCU_CR &=0xFFFFFFDF;  //如果没有这段代码，PB3就会一直是低电平
 }
+	
 //定时器4初始化，为PID提供计时
 void TIM4_Counter_Init(u16 arr,u16 psc)
 {
@@ -107,23 +111,23 @@ void TIM4_Counter_Init(u16 arr,u16 psc)
 	
 	TIM_Cmd(TIM4,ENABLE);
 }
-
+//TIM4定时器中断服务函数
 void TIM4_IRQHandler(void)
 {
 	if(TIM_GetITStatus(TIM4, TIM_IT_Update)!=RESET)//检查TIM4更新中断发生与否
 	{
 		TIM_ClearITPendingBit(TIM4, TIM_IT_Update);//清除TIM4更新中断标志
-		PID_Output();//每0.01s运行一次PID
-		nowTime++;
+		PID_Output();//每100us运行一次PID
+		nowTime++;//1ms更新一次计时器
 		sleepCount++;
 		shutCount++;
 	}
 }
-
+//获取时间字符串
 void getClockTime(char timeStr[])
 {
 	u32 hour=0,min=0,sec=0;
-	sec = nowTime/100;
+	sec = nowTime/1000;
 	hour = sec/3600;
 	min = sec%3600/60;
 	sec = sec-hour*3600-min*60;

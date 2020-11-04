@@ -251,7 +251,7 @@ void EXTI0_IRQHandler(void)
 		menuEvent[1]=BM_up; //顺时针旋转
 		switch(nowMenuIndex){
 			case home:
-				setData.setTemp++;
+				setData.setTemp+=5;
 			break;
 			case xmsjSet:
 				setData.sleepTime++;
@@ -275,7 +275,7 @@ void EXTI0_IRQHandler(void)
 		menuEvent[1]=BM_down; //逆时针旋转
 		switch(nowMenuIndex){
 			case home:
-				setData.setTemp--;
+				setData.setTemp-=5;
 			break;
 			case xmsjSet:
 				setData.sleepTime--;
@@ -294,7 +294,7 @@ void EXTI0_IRQHandler(void)
 			break;
 		}
 	}
-	if(setData.setTemp>500) setData.setTemp=500;
+	if(setData.setTemp>400) setData.setTemp=400;
 	if(setData.setTemp<100) setData.setTemp=100;
 	if(setData.sleepTime>60) setData.sleepTime=60;
 	if(setData.sleepTime<0) setData.sleepTime=0;

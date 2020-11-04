@@ -12,6 +12,7 @@
 /*https://blog.csdn.net/embedded_guzi/article/details/35835755
 https://blog.csdn.net/calmuse/article/details/79346742
 */
+u16 ShowTemp;
 u8 volatile sleepFlag = 0;//是否休眠,1为休眠
 u8 volatile shutFlag = 0;//是否休眠,1为关机
 u8 volatile nowMenuIndex = 0;
@@ -79,8 +80,7 @@ void OLED_display(void){
 
 void homeWindow(void)
 {
-	
-	OLED_Fill(0,0,127,0,1);//水平分割线
+	OLED_Fill(0,0,110,0,1);//水平分割线
 	char timeStr[10];
 	getClockTime(timeStr);
 	OLED_ShowString(0,0,(u8*)timeStr,16,0);//时间00:00:00
@@ -88,11 +88,15 @@ void homeWindow(void)
 	sprintf((char *)tempStr,"%d",setData.setTemp);//组合温度字符串
 	OLED_ShowString(88,0, (u8 *)tempStr,16,0);//设置温度
 	OLED_DrawPointBMP(112,0,tempSign,16,16,0);//℃
-	OLED_Fill(0,15,127,15,1);//水平分割线
+	OLED_Fill(0,15,127,15,1);//水平分割线// 在设定点附近稳定显示温度
+	
+	// 在设定点附近稳定显示温度
+	if ((ShowTemp != setData.setTemp) || (abs(ShowTemp - T12_temp) > 5)) ShowTemp = T12_temp;
+	if (abs(ShowTemp - setData.setTemp) <= 1) ShowTemp = setData.setTemp;
 	u16 bai,shi,ge;
-	bai = (u16)T12_temp/100;
-	shi = (u16)T12_temp%100/10;
-	ge = (u16)T12_temp%10;
+	bai = (u16)ShowTemp/100;
+	shi = (u16)ShowTemp%100/10;
+	ge = (u16)ShowTemp%10;
 	OLED_DrawPointNum(0,17,bai*6,1);//当前温度-百位
 	OLED_DrawPointNum(25,17,shi*6,1);//当前温度-十位
 	OLED_DrawPointNum(50,17,ge*6,1);//当前温度-个位
