@@ -1,10 +1,12 @@
-# T20焊台控制器
+## T20焊台控制器
+[![Latest version](https://img.shields.io/github/v/release/Cai-Zi/STM32_T12_Controller)](https://github.com/Cai-Zi/STM32_T12_Controller/releases)
 工欲善其事，必先利其器。
 这个开源项目使用STM32F103C8T6-BluePill（8元包邮）来制作T12焊台控制器，助你拥有一个得心应手的焊台！！！<br>
 此控制器命名为T20，和J20航模遥控器做成一个系列，20也象征着开发时间。<br>
 原理图部分主要参考了sfrwmaker的开源仓库https://github.com/sfrwmaker/hakko_t12_stm32<br>
 程序部分使用keil5和stm32标准库编写，PID参数是白嫖的wagiminator的开源仓库https://github.com/wagiminator/ATmega-Soldering-Station<br>
-# 引脚说明
+- QQ群：1091996634，密码：J20
+## 引脚说明
 - OLED_D0  -> PB13
 - OLED_D1	 -> PB15
 - OLED_RES -> PB15
@@ -18,7 +20,7 @@
 - T12_ADC -> PA4
 - HEAT 	  -> PA0
 - SLEEP 	-> PA8
-# 版本说明
+## 版本说明
 - V1.0(2020.10.20)<br>
 配套的T12烙铁头为S型热电偶，如果是其他类型的热电偶，需要更改程序中的分度表；<br>
 已完成的功能包含设置温度、自动休眠、自动关机、蜂鸣器开关、恢复默认设置；<br>
