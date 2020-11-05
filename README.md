@@ -1,6 +1,6 @@
 ## T20焊台控制器
 [![Latest version](https://img.shields.io/github/v/release/Cai-Zi/STM32_T12_Controller)](https://github.com/Cai-Zi/STM32_T12_Controller/releases)
-工欲善其事，必先利其器。
+<br>工欲善其事，必先利其器。
 这个开源项目使用STM32F103C8T6-BluePill（8元包邮）来制作T12焊台控制器，助你拥有一个得心应手的焊台！！！<br>
 此控制器命名为T20，和J20航模遥控器做成一个系列，20也象征着开发时间。<br>
 原理图部分主要参考了sfrwmaker的开源仓库https://github.com/sfrwmaker/hakko_t12_stm32<br>
