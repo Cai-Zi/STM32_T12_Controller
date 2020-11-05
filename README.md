@@ -5,7 +5,7 @@
 原理图部分主要参考了sfrwmaker的开源仓库https://github.com/sfrwmaker/hakko_t12_stm32<br>
 程序部分使用keil5和stm32标准库编写，PID参数是白嫖的wagiminator的开源仓库https://github.com/wagiminator/ATmega-Soldering-Station<br>
 # 引脚说明
-* OLED显示屏(7脚SPI)：<br>
+~ OLED显示屏(7脚SPI) ~：<br>
 - OLED_D0  -> PB13
 - OLED_D1	 -> PB15
 - OLED_RES -> PB15
