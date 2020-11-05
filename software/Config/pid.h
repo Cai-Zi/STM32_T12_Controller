@@ -17,7 +17,7 @@ typedef struct PID_Value
 extern volatile u32 nowTime;
 extern volatile u32 sleepCount;
 extern volatile u32 shutCount;
-
+extern volatile int uk;
 void HEAT_Init(void);
 void PID_Setup(void);
 void PID_Output(void);

@@ -10,12 +10,6 @@
    为了消除噪声读数，采样ADC几次，然后平均样本以获得更稳定的测量值，用readThermistor函数实现。
    http://www.thermistors.cn/news/293.html
 */ 
-#define sampleNum 10
-// 默认烙铁头温度校准值
-#define TEMP100 790 // 100℃时的ADC值
-#define TEMP200 1560 // 200℃时的ADC值
-#define TEMP300 2830 // 300℃时的ADC值
-#define TEMP420 4090 // 400℃时的ADC值
 float ADC_max = 4095.0; //最大采样值，12位ADC
 /*使用beta方程计算阻值。*/ 
 float beta = 3950.0; //商家给出的电阻对应25°C下的bata值
@@ -23,7 +17,6 @@ float roomTemp = 298.15; //以开尔文为单位的室温25°C
 float balanceR = 9900.0;//参考电阻
 float roomTempR = 10000.0; //NTC热敏电阻在室温25°C下具有典型的电阻
 float currentTemperature = 0; //保存当前温度
-u16 ch1Value[2*sampleNum];//ADC采样值
 u16 NTC_Average=0;
 u16 T12_Average=0;
 #define ADC1_DR_Address    ((u32)0x4001244C)		//ADC1的地址
@@ -96,7 +89,7 @@ u16 Get_Adc_Average(u8 ch,u8 times)
 	for(t=0;t<times;t++)
 	{
 		temp_val+=Get_Adc(ch);
-		delay_ms(5);
+		delay_us(5);
 	}
 	return temp_val/times;
 }
@@ -139,7 +132,7 @@ u16 get_NTC_temp(void)
   float rThermistor = 0; //保存热敏电阻的电阻值
   float tKelvin = 0; //以开尔文温度保存温度
   float tCelsius = 0; //以摄氏温度保存温度
-	NTC_Average = Get_Adc_Average(6,10);
+	NTC_Average = Get_Adc(6);
   /*公式计算热敏电阻的电阻。*/ 
   rThermistor = balanceR * NTC_Average/(ADC_max - NTC_Average); 
   tKelvin =(beta * roomTemp)/(beta +(roomTemp * log(rThermistor / roomTempR)));  
@@ -150,18 +143,12 @@ u16 get_NTC_temp(void)
 //获取功放的ADC采样值
 void get_T12_ADC(void)
 {
-	if(HEAT) 
-	{
-		HEAT=0;//先停止加热
-		delay_ms(1);//等待电压稳定
-		T12_Average = Get_Adc_Average(4,10);//获取功放的采样值
-		HEAT=1;//继续加热
-	}
-	else 
-	{
-		delay_ms(1);//等待电压稳定
-		T12_Average = Get_Adc_Average(4,10);//获取功放的采样值
-	}
+	u16 nowADC;
+	TIM_SetCompare1(TIM2,0); //先停止加热
+	delay_us(500);//等待电压稳定
+	nowADC = Get_Adc(4);//获取功放的采样值
+	if(nowADC<4060) T12_Average = nowADC;
+	TIM_SetCompare1(TIM2,uk);//继续加热
 }
 //获取热电偶的电压，根据分度表转换为温度
 u16 get_T12_temp(void)

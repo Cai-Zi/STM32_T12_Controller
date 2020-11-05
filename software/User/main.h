@@ -26,9 +26,25 @@ extern "C" {
 #define SLEEP_GPIO_Port GPIOA
 #define SLEEP PAin(8)
 
+// 默认温度控制值（建议焊接温度：300-380°C）
+#define TEMP_MIN   150 // 最低可选温度
+#define TEMP_MAX   400 // 最大可选温度
+#define TEMP_SLEEP 100 // 睡眠模式下的温度
+#define TEMP_ADD	50 // 强力模式下的温度升高值
+
+// 默认烙铁头温度校准值
+#define TEMP100 790  // 100℃时的ADC值
+#define TEMP200 1560 // 200℃时的ADC值
+#define TEMP300 2830 // 300℃时的ADC值
+#define TEMP420 4090 // 400℃时的ADC值
+
+// 默认计时器值（0=禁用）
+#define TIME_SLEEP 5        // 进入睡眠模式的时间（分钟）
+#define TIME_SHUT  20       // 关闭加热器的时间（分钟）
+
 extern u16 volatile NTC_temp;//手柄温度
 extern u16 volatile T12_temp;//烙铁头温度
-	 
+
 #ifdef __cplusplus
 }
 #endif

@@ -13,7 +13,7 @@ void BEEPER_Init(void)
 	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_9;	
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO口速度为50MHz
-	GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化GPIOA10
+	GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化GPIO
 	GPIO_ResetBits(GPIOB,GPIO_Pin_9);//输出低电平
 }
 //蜂鸣器短响一次

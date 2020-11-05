@@ -15,6 +15,7 @@ https://blog.csdn.net/calmuse/article/details/79346742
 u16 ShowTemp;
 u8 volatile sleepFlag = 0;//是否休眠,1为休眠
 u8 volatile shutFlag = 0;//是否休眠,1为关机
+
 u8 volatile nowMenuIndex = 0;
 u8 volatile lastMenuIndex = 0;
 extern unsigned char logo[];
@@ -91,7 +92,7 @@ void homeWindow(void)
 	OLED_Fill(0,15,127,15,1);//水平分割线// 在设定点附近稳定显示温度
 	
 	// 在设定点附近稳定显示温度
-	if ((ShowTemp != setData.setTemp) || (abs(ShowTemp - T12_temp) > 5)) ShowTemp = T12_temp;
+	if ((ShowTemp != setData.setTemp) || (abs(ShowTemp - T12_temp) > 10)) ShowTemp = T12_temp;
 	if (abs(ShowTemp - setData.setTemp) <= 1) ShowTemp = setData.setTemp;
 	u16 bai,shi,ge;
 	bai = (u16)ShowTemp/100;
@@ -102,16 +103,16 @@ void homeWindow(void)
 	OLED_DrawPointNum(50,17,ge*6,1);//当前温度-个位
 	OLED_DrawPointBMP(78,24,tempSign,16,16,1);//℃
 	OLED_ShowNum(78,48,(u16)NTC_temp,2,16);//手柄温度
-	if(HEAT){
-		OLED_DrawPointBMP(110,24,heatSign,16,16,1);//加热标志
-		OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
-	}
-	else if(sleepFlag){
+	if(shutFlag){
 		OLED_DrawPointBMP(110,24,sleepSign,16,16,1);//休眠标志
 		OLED_ShowString(104,48, (u8 *)"OFF",16,1);//加热设置
 	}
+	else if(sleepFlag){
+		OLED_DrawPointBMP(110,24,sleepSign,16,16,1);//加热标志
+		OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
+	}
 	else{
-		OLED_Fill(110,24,126,40,0);//清空标志
+		OLED_DrawPointBMP(110,24,heatSign,16,16,1);//加热标志
 		OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
 	}
 }
@@ -239,11 +240,11 @@ void menu_gybjTip(void){
 	
 	u8 rqIndex[] = {35,36};
 	OLED_ShowChineseWords(0,16,rqIndex,2,1);
-	OLED_ShowString(32,16,(u8*)": 2020.10.20",16,1);
+	OLED_ShowString(32,16,(u8*)": 2020.11.05",16,1);
 	
 	u8 bbIndex[] = {37,38};
 	OLED_ShowChineseWords(0,32,bbIndex,2,1);
-	OLED_ShowString(32,32,(u8*)": V1.0",16,1);
+	OLED_ShowString(32,32,(u8*)": V1.2",16,1);
 	
 	OLED_ShowString(0,48,(u8*)"QQ",16,1);
 	OLED_ShowChinese(16,48,39,16,1);

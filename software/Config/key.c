@@ -6,6 +6,7 @@
 #include "setting.h"
 #include "menu.h"
 #include "oled.h"
+#include "main.h"
 //参考链接https://blog.csdn.net/qq_42679566/article/details/105892105，原文错误已修正
 
 Key_Config Key_Buf[KEY_NUM];	// 创建按键数组
@@ -246,6 +247,7 @@ void EXTI0_IRQHandler(void)
 {
 	delay_ms(5);	//消抖，很重要
 	menuEvent[0]=1;//菜单事件
+	beeperOnce();
 	if(BM_CLK==BM_DT) 
 	{
 		menuEvent[1]=BM_up; //顺时针旋转
