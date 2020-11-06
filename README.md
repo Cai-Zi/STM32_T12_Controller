@@ -1,5 +1,5 @@
 ## T20焊台控制器
-[![License: GPL v3](https://img.shields.io/badge/License-MIT-blue.svg)](https://www.gnu.org/licenses/mit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://www.gnu.org/licenses/mit)
 [![Latest version](https://img.shields.io/github/v/release/Cai-Zi/STM32_T12_Controller)](https://github.com/Cai-Zi/STM32_T12_Controller/releases)
 <br>工欲善其事，必先利其器。
 这个开源项目使用STM32F103C8T6-BluePill（8元包邮）来制作T12焊台控制器，助你拥有一个得心应手的焊台！！！<br>
@@ -35,5 +35,5 @@
 参考wagiminator的PID控制方式，将PWM更新频率由10Hz提高到390Hz，细分数由100提高到255；<br>
 使用分段式PID：温差>100℃时，全速加热；温差30~100℃时，激进的PID；温差<30℃时，保守的PID；<br>
 得到的温度非常稳定！！！焊接大焊点时，波动在10℃左右。<br>
-读者可自行使用万用表的温度计校准了分度表，使用USB-TTL串口下载器和串口调试助手(115200bps)读取ADC值，<br>
+读者可自行使用万用表的温度计校准分度表：使用USB-TTL串口下载器和串口调试助手(115200bps)读取100℃、200℃、300℃、420℃时的ADC值，<br>
 然后更改main.h文件中的TEMP100、TEMP200、TEMP300、TEMP420即可；<br>
