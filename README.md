@@ -7,6 +7,7 @@
 原理图部分主要参考了sfrwmaker的开源仓库https://github.com/sfrwmaker/hakko_t12_stm32<br>
 程序部分使用keil5和stm32标准库编写，PID参数是白嫖的wagiminator的开源仓库https://github.com/wagiminator/ATmega-Soldering-Station<br>
 - QQ群：1091996634，密码：J20
+- 教程：https://www.cnblogs.com/cai-zi/p/13812306.html
 ## 引脚说明
 - OLED_D0  -> PB13
 - OLED_D1	 -> PB15
