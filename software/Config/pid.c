@@ -33,7 +33,11 @@ void PID_Operation(void)
 {
 	pt = T12_temp;//当前温度值
 	if(sleepFlag) e0 = TEMP_SLEEP - pt;//睡眠模式下的温度
-	else if(setData.workMode==0) e0 = setData.setTemp + TEMP_ADD - pt;//强力模式下增加温度
+	else if(setData.workMode==0) //强力模式下增加温度
+	{
+		if(setData.setTemp + TEMP_ADD > TEMP_MAX) e0 = TEMP_MAX - pt;//不能超过最大值
+		else  e0 = setData.setTemp + TEMP_ADD - pt;
+	}
 	else e0 = setData.setTemp - pt;//标准模式
 	if(e0>100) uk=PWM_T;//温差>100℃时，全速加热
 	else if(e0>30)//温差30~100℃时，进行激进的PID解算

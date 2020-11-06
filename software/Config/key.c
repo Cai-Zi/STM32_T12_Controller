@@ -296,8 +296,8 @@ void EXTI0_IRQHandler(void)
 			break;
 		}
 	}
-	if(setData.setTemp>400) setData.setTemp=400;
-	if(setData.setTemp<100) setData.setTemp=100;
+	if(setData.setTemp>TEMP_MAX) setData.setTemp=TEMP_MAX;
+	if(setData.setTemp<TEMP_MIN) setData.setTemp=TEMP_MIN;
 	if(setData.sleepTime>60) setData.sleepTime=60;
 	if(setData.sleepTime<0) setData.sleepTime=0;
 	if(setData.shutTime>60) setData.shutTime=60;

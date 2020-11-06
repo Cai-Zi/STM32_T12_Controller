@@ -8,7 +8,7 @@
 //计数：1+8*3+8*2+8+1+2+1+1
 typedef struct _set_Config// 用户设置结构体
 {
-	u8 writeFlag;//是否第一次写入=2字节16位
+	u8 writeFlag;//是否第一次写入=1字节8位
 	int setTemp;//设置温度
 	int sleepTime;//休眠时间
 	int shutTime;//关机时间
