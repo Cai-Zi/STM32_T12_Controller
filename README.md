@@ -1,3 +1,4 @@
+![T20](./doc/logo.bmp)<br>
 ## T20焊台控制器
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://www.gnu.org/licenses/mit)
 [![Latest version](https://img.shields.io/github/v/release/Cai-Zi/STM32_T12_Controller)](https://github.com/Cai-Zi/STM32_T12_Controller/releases)
