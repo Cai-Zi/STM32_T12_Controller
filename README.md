@@ -12,30 +12,22 @@
 ## 元件清单(BOM)
 - （1）T12烙铁头（焊贴片用刀头，焊插件用尖头）
 - （2）烙铁手柄（笔者买的907手柄）、硅胶线（5线）、烙铁支架（带NTC电阻10k、震动开关）、航插（5线）
-- （3）24V4A开关电源，给烙铁供电<br>
-https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.33.17fc6a4bl5eVUy&id=560319416660
-- （4）DC-DC降压模块，24V转5V，给控制板供电<br>
-https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.19.34f96a4bHIEpSp&id=536347025767
-- （5）旋转编码器<br>
-https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.9.7d2b6a4bBVyIM1&id=532637569029
-- （6）OLED显示屏（7脚SPI）<br>
-https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.22.6b146a4bQeIpQy&id=562145367495
+- （3）24V4A开关电源，给烙铁供电 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.33.17fc6a4bl5eVUy&id=560319416660)
+- （4）DC-DC降压模块，24V转5V，给控制板供电 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.19.34f96a4bHIEpSp&id=536347025767)
+- （5）旋转编码器 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.9.7d2b6a4bBVyIM1&id=532637569029)
+- （6）OLED显示屏（7脚SPI） [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.22.6b146a4bQeIpQy&id=562145367495)
 - （7）STM32F103C8T6最小系统板
-- （8）IRF9540 MOS管P沟道，驱动电烙铁的<br>
-https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.9.901e6a4b9iiE0a&id=522575402372
+- （8）IRF9540 MOS管P沟道，驱动电烙铁的 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.9.901e6a4b9iiE0a&id=522575402372)
 - （9）SS8050三极管
 - （10）肖特基二极管（用来续流）
 - （11）运算放大器LM358，笔者用的AD823，两者都是可以的
-- （12）3.3v稳压管<br>
-https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.35.be596a4bDZ94Ne&id=580234927158
-- （13）18v稳压管<br>
-https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.18.52186a4brkOWGF&id=580243199645
+- （12）3.3v稳压管 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.35.be596a4bDZ94Ne&id=580234927158)
+- （13）18v稳压管 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.18.52186a4brkOWGF&id=580243199645)
 - （14）电解电容100uF（用来稳压）
 - （15）独石电容0.1uF（用来滤波），又称104电容 
 - （16）有源蜂鸣器5V的（接电即响） 
 - （17）470Ω、1k、51k、10k、100k电阻若干
-- （18）500k可调电阻<br>
-https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.12.7cc76a4bofuOr0&id=522572774132
+- （18）500k可调电阻 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.12.7cc76a4bofuOr0&id=522572774132)
 - （19）ST-LINK V2下载器<br>
 调试STM32性价比极高，可烧写程序，可断点调试
 ## 引脚说明
