@@ -81,10 +81,13 @@ void OLED_display(void){
 
 void homeWindow(void)
 {
-	OLED_Fill(0,0,110,0,1);//水平分割线
 	char timeStr[10];
 	getClockTime(timeStr);
-	OLED_ShowString(0,0,(u8*)timeStr,16,0);//时间00:00:00
+	OLED_ShowString(0,0,(u8*)timeStr,16,0);//时间000:00
+	char VinStr[6];//输入电压字符串
+	if(VinVolt<10.0) sprintf((char *)VinStr,"%1.2f",VinVolt);//组合电压字符串
+	else sprintf((char *)VinStr,"%2.1f",VinVolt);//组合电压字符串
+	OLED_ShowString(52,0, (u8 *)VinStr,16,1);//输入电压
 	char tempStr[4];//温度字符串
 	sprintf((char *)tempStr,"%d",setData.setTemp);//组合温度字符串
 	OLED_ShowString(88,0, (u8 *)tempStr,16,0);//设置温度
@@ -101,20 +104,23 @@ void homeWindow(void)
 	OLED_DrawPointNum(0,17,bai*6,1);//当前温度-百位
 	OLED_DrawPointNum(25,17,shi*6,1);//当前温度-十位
 	OLED_DrawPointNum(50,17,ge*6,1);//当前温度-个位
-	OLED_DrawPointBMP(78,24,tempSign,16,16,1);//℃
-	OLED_ShowNum(78,48,(u16)NTC_temp,2,16);//手柄温度
+	
+	OLED_ShowNum(78,24,(u16)NTC_temp,2,16);//手柄温度
+	OLED_DrawPointBMP(94,24,tempSign,16,16,1);//℃
+	OLED_ShowNum(78,48,(u16)100*uk/255,3,16);//加热PWM百分比
 	if(shutFlag){
-		OLED_DrawPointBMP(110,24,sleepSign,16,16,1);//休眠标志
+		OLED_DrawPointBMP(112,24,sleepSign,16,15,1);//休眠标志
 		OLED_ShowString(104,48, (u8 *)"OFF",16,1);//加热设置
 	}
 	else if(sleepFlag){
-		OLED_DrawPointBMP(110,24,sleepSign,16,16,1);//加热标志
+		OLED_DrawPointBMP(112,24,sleepSign,16,15,1);//加热标志
 		OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
 	}
 	else{
-		OLED_DrawPointBMP(110,24,heatSign,16,16,1);//加热标志
+		OLED_DrawPointBMP(112,24,heatSign,16,15,1);//加热标志
 		OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
 	}
+	
 }
 
 /*

@@ -30,7 +30,7 @@ void  Adc_Init(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);	  //使能GPIOA时钟
 
 	//PA6 作为模拟通道输入引脚   
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4|GPIO_Pin_6;//NTC和T12的温度检测引脚
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2|GPIO_Pin_4|GPIO_Pin_6;//输入电压、NTC和T12的温度检测引脚
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);  
@@ -56,7 +56,7 @@ void  Adc_Init(void)
 	ADC_InitStructure.ADC_NbrOfChannel = 1;	//顺序进行规则转换的ADC通道的数目
 	ADC_Init(ADC1, &ADC_InitStructure);	//根据ADC_InitStruct中指定的参数初始化外设ADCx的寄存器  
 	
-	
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_239Cycles5);		//配置ADC1通道2为239.5个采样周期
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 1, ADC_SampleTime_239Cycles5);		//配置ADC1通道4为239.5个采样周期
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_239Cycles5);		//配置ADC1通道6为239.5个采样周期 
 	
@@ -138,6 +138,11 @@ u16 get_NTC_temp(void)
   tKelvin =(beta * roomTemp)/(beta +(roomTemp * log(rThermistor / roomTempR)));  
   tCelsius = tKelvin  -  273.15; //将开尔文转换为摄氏温度
   return tCelsius;//以摄氏度返回温度
+}
+//获取输入电压值
+void get_Vin(void)
+{
+	VinVolt = 11*3.3*Get_Adc(2)/4095;//获取功放的采样值
 }
 
 //获取功放的ADC采样值

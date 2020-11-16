@@ -245,64 +245,10 @@ void encoder_Init(void)
 //中断服务函数，检测旋转编码器的旋转方向
 void EXTI0_IRQHandler(void)
 {
-	delay_ms(5);	//消抖，很重要
+	delay_ms(1);	//消抖，很重要
 	menuEvent[0]=1;//菜单事件
-	beeperOnce();
-	if(BM_CLK==BM_DT) 
-	{
-		menuEvent[1]=BM_up; //顺时针旋转
-		switch(nowMenuIndex){
-			case home:
-				setData.setTemp+=5;
-			break;
-			case xmsjSet:
-				setData.sleepTime++;
-			break;
-			case gjsjSet:
-				setData.shutTime++;
-			break;
-			case gzmsSet:
-				setData.workMode=!setData.workMode;
-			break;
-			case fmqSet:
-				setData.beeperFlag = !setData.beeperFlag;
-			break;
-			case yyszSet:
-				setData.langFlag = !setData.langFlag;
-			break;
-		}
-	}
-	else 
-	{
-		menuEvent[1]=BM_down; //逆时针旋转
-		switch(nowMenuIndex){
-			case home:
-				setData.setTemp-=5;
-			break;
-			case xmsjSet:
-				setData.sleepTime--;
-			break;
-			case gjsjSet:
-				setData.shutTime--;
-			break;
-			case gzmsSet:
-				setData.workMode=!setData.workMode;
-			break;
-			case fmqSet:
-				setData.beeperFlag = !setData.beeperFlag;
-			break;
-			case yyszSet:
-				setData.langFlag = !setData.langFlag;
-			break;
-		}
-	}
-	if(setData.setTemp>TEMP_MAX) setData.setTemp=TEMP_MAX;
-	if(setData.setTemp<TEMP_MIN) setData.setTemp=TEMP_MIN;
-	if(setData.sleepTime>60) setData.sleepTime=60;
-	if(setData.sleepTime<0) setData.sleepTime=0;
-	if(setData.shutTime>60) setData.shutTime=60;
-	if(setData.shutTime<0) setData.shutTime=0;
-	
+	if(BM_CLK==BM_DT) menuEvent[1]=BM_up; //顺时针旋转
+	else menuEvent[1]=BM_down; //逆时针旋转
  	EXTI_ClearITPendingBit(EXTI_Line0);    //清除LINE1上的中断标志位 
 }
 

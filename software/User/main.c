@@ -21,6 +21,7 @@ OLED显示屏(7脚SPI)：
 	T12_ADC -> PA4
 	HEAT 	-> PA0
 	SLEEP 	-> PA8
+	Vm		-> PA2
 //此版本的代码实现功能：
 //-T12烙铁头的温度测量
 //-加热器的分段PID控制
@@ -28,6 +29,7 @@ OLED显示屏(7脚SPI)：
 //-短按旋转编码器开关可进入休眠模式
 //-长按旋转编码器开关的设置菜单
 //-手柄运动检测（通过检查振动开关）
+//-输入电压检测
 //-时间驱动的睡眠/关机模式（通过计算未使用烙的时长）
 //-OLED上的信息显示
 //-蜂鸣器
@@ -37,8 +39,11 @@ OLED显示屏(7脚SPI)：
 #include "stm32f10x.h"
 #include "main.h"
 
+void menuHandler(void);
+
 extern unsigned char logo[];
 char tempStr[10];//电池电压字符串
+float volatile VinVolt;//输入电压
 u16 volatile NTC_temp;//手柄温度
 u16 volatile T12_temp;//烙铁头温度
 u16 count;
@@ -69,7 +74,8 @@ int main()
 		PID_Output();//运行PID
 		if(count%700==0)//更新一次
 		{
-			NTC_temp = get_NTC_temp();
+			NTC_temp = get_NTC_temp();//获取一次手柄温度值
+			get_Vin();//获取一次输入电压值
 			printf("ADC:%d\r\n",T12_Average);
 		}
 		if(nowMenuIndex==home && count%400==0)//更新一次home界面
@@ -79,6 +85,7 @@ int main()
 		}
 		if(menuEvent[0])
 		{
+			menuHandler();
 			beeperOnce();
 			if(menuEvent[1]==KEY_enter && nowMenuIndex == home)
 			{
@@ -95,4 +102,60 @@ int main()
 		if(setData.shutTime>0 && shutCount>setData.shutTime*60000) {shutFlag=1;}
 		count++;
 	}
+}
+//菜单处理函数
+void menuHandler(void)
+{
+	if(menuEvent[1]==BM_up)
+	{
+		switch(nowMenuIndex){
+			case home:
+				setData.setTemp+=5;
+			break;
+			case xmsjSet:
+				setData.sleepTime++;
+			break;
+			case gjsjSet:
+				setData.shutTime++;
+			break;
+			case gzmsSet:
+				setData.workMode=!setData.workMode;
+			break;
+			case fmqSet:
+				setData.beeperFlag = !setData.beeperFlag;
+			break;
+			case yyszSet:
+				setData.langFlag = !setData.langFlag;
+			break;
+		}
+	}
+	else
+	{
+		switch(nowMenuIndex){
+			case home:
+				setData.setTemp-=5;
+			break;
+			case xmsjSet:
+				setData.sleepTime--;
+			break;
+			case gjsjSet:
+				setData.shutTime--;
+			break;
+			case gzmsSet:
+				setData.workMode=!setData.workMode;
+			break;
+			case fmqSet:
+				setData.beeperFlag = !setData.beeperFlag;
+			break;
+			case yyszSet:
+				setData.langFlag = !setData.langFlag;
+			break;
+		}
+	}
+	if(setData.setTemp>TEMP_MAX) setData.setTemp=TEMP_MAX;
+	if(setData.setTemp<TEMP_MIN) setData.setTemp=TEMP_MIN;
+	if(setData.sleepTime>60) setData.sleepTime=60;
+	if(setData.sleepTime<0) setData.sleepTime=0;
+	if(setData.shutTime>60) setData.shutTime=60;
+	if(setData.shutTime<0) setData.shutTime=0;
 }

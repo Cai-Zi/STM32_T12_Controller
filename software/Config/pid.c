@@ -144,11 +144,11 @@ void TIM4_IRQHandler(void)
 //获取时间字符串
 void getClockTime(char timeStr[])
 {
-	u32 hour=0,min=0,sec=0;
+	u32 min=0,sec=0;
 	sec = nowTime/10;
-	hour = sec/3600;
-	min = sec%3600/60;
-	sec = sec-hour*3600-min*60;
-	sprintf((char *)timeStr,"%02d:%02d:%02d",hour,min,sec);//组合时间字符串
+//	hour = sec/3600;
+	min = sec/60;
+	sec = sec-min*60;
+	sprintf((char *)timeStr,"%03d:%02d",min,sec);//组合时间字符串
 }
 

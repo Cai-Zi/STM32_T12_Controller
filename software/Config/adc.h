@@ -12,6 +12,7 @@ u16 Get_Adc_Average(u8 ch,u8 times);//ADC采样值进行均值滤波
 float map(float value,float fromLow,float fromHigh,float toLow,float toHigh);//映射函数
 u16 get_NTC_temp(void);
 void get_T12_ADC(void);
+void get_Vin(void);
 u16 get_T12_temp(void);
 u16 sleepCheck(void);
 #endif
