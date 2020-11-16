@@ -55,7 +55,7 @@ https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.12.7cc76a4bof
 - TX -> PA9
 - RX -> PA10
 ## 版本说明
-- V1.0(2020.10.20)![V1.0](https://github.com/Cai-Zi/STM32_T12_Controller/releases/tag/v1.0)<br>
+- V1.0(2020.10.20)[![v1.0](https://img.shields.io/github/v/release/Cai-Zi/STM32_T12_Controller)](https://github.com/Cai-Zi/STM32_T12_Controller/releases/tag/v1.1)<br>
 配套的T12烙铁头为S型热电偶，如果是其他类型的热电偶，需要更改程序中的分度表；<br>
 已完成的功能包含设置温度、自动休眠、自动关机、蜂鸣器开关、恢复默认设置；<br>
 在home页面时，短按旋转编码器设置加热开关，长按进入菜单，旋转设置加热温度；<br>
