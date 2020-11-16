@@ -56,12 +56,11 @@ https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.12.7cc76a4bof
 - RX -> PA10
 ## 版本说明
 - V1.0(2020.10.20)<br>
-[![v1.0](https://img.shields.io/github/v/release/Cai-Zi/STM32_T12_Controller/releases/tag/v1.0)](https://github.com/Cai-Zi/STM32_T12_Controller/releases/tag/v1.0)<br>
 配套的T12烙铁头为S型热电偶，如果是其他类型的热电偶，需要更改程序中的分度表；<br>
 已完成的功能包含设置温度、自动休眠、自动关机、蜂鸣器开关、恢复默认设置；<br>
 在home页面时，短按旋转编码器设置加热开关，长按进入菜单，旋转设置加热温度；<br>
 在菜单页面时，短按进入选择，再短按退出，旋转设置参数，长按退出菜单。<br>
-- V1.1(2020.11.3)![V1.1](https://github.com/Cai-Zi/STM32_T12_Controller/releases/tag/v1.1)<br>
+- V1.1(2020.11.3)[V1.1](https://github.com/Cai-Zi/STM32_T12_Controller/releases/tag/v1.1)<br>
 实际测试发现T12烙铁里面的热电偶与S型不符（更不符合其他类型），使用万用表的温度计校准了分度表，读者可自行设置校准值；<br>
 使用USB-TTL串口下载器和串口调试助手(115200bps)读取ADC值，然后更改adc.c文件中的TEMP100、TEMP200、TEMP300、TEMP420即可；<br>
 实际使用中温度的波动在30℃左右，焊接时设置280℃即可。<br>
