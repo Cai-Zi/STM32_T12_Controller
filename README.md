@@ -20,7 +20,7 @@
 - （8）IRF9540 MOS管P沟道，驱动电烙铁的 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.9.901e6a4b9iiE0a&id=522575402372)
 - （9）SS8050三极管
 - （10）肖特基二极管（用来续流）
-- （11）运算放大器LM358，笔者用的AD823，两者都是可以的
+- （11）运算放大器AD823 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a230r.1.14.25.4f732124EhhC0R&id=620910335960&ns=1&abbucket=18#detail)
 - （12）3.3v稳压管 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.35.be596a4bDZ94Ne&id=580234927158)
 - （13）18v稳压管 [淘宝商品链接](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21223910208.18.52186a4brkOWGF&id=580243199645)
 - （14）电解电容100uF（用来稳压）
