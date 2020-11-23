@@ -42,10 +42,11 @@ extern "C" {
 #define TIME_SLEEP 5        // 进入睡眠模式的时间（分钟）
 #define TIME_SHUT  20       // 关闭加热器的时间（分钟）
 
+#define TEMPARRLEN 20 //温度数组元素个数
 extern u16 volatile NTC_temp;//手柄温度
 extern u16 volatile T12_temp;//烙铁头温度
 extern float volatile VinVolt;//输入电压
-
+extern u16 volatile tempArray[TEMPARRLEN];//温度数组
 #ifdef __cplusplus
 }
 #endif

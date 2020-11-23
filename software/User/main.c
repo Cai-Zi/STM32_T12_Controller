@@ -46,6 +46,7 @@ char tempStr[10];//电池电压字符串
 float volatile VinVolt;//输入电压
 u16 volatile NTC_temp;//手柄温度
 u16 volatile T12_temp;//烙铁头温度
+u16 volatile tempArray[TEMPARRLEN];//温度数组，均值滤波
 u16 count;
 int main()
 {
@@ -62,13 +63,19 @@ int main()
 	TIM4_Counter_Init(9999,719);//定时100ms中断一次
 	PID_Setup();//PID初始化
 	
-	
 	OLED_Clear();
 	OLED_DrawPointBMP(0,0,logo,128,64,1);//显示logo
 	OLED_Refresh_Gram();//刷新显存
 	delay_ms(1000);
-	T12_temp = get_T12_temp();
+	
+	//初始化温度
 	NTC_temp = get_NTC_temp();//读取手柄温度
+	T12_temp = NTC_temp;
+	for(u8 n=0; n<TEMPARRLEN; n++)
+	{
+		tempArray[n]=T12_temp;
+	}
+	
 	OLED_Fill(0,0,127,63,0);
 	while (1){
 		PID_Output();//运行PID

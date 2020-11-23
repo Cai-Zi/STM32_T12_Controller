@@ -39,8 +39,8 @@ void PID_Operation(void)
 		else  e0 = setData.setTemp + TEMP_ADD - pt;
 	}
 	else e0 = setData.setTemp - pt;//标准模式
-	if(e0>100) uk=PWM_T;//温差>100℃时，全速加热
-	else if(e0>30)//温差30~100℃时，进行激进的PID解算
+	if(e0>50) uk=PWM_T;//温差>50℃时，全速加热
+	else if(e0>30)//温差30~50℃时，进行激进的PID解算
 	{
 		duk=aggKp*(e0-e1)+aggKp*aggKi*e0+aggKp*aggKd*(e0-2*e1+e2);
 		uk=uk+duk;
@@ -62,6 +62,7 @@ void PID_Operation(void)
 * 入口参数：无（隐形输入，U(k)）                                                 
 * 出口参数：无（控制端）                                                                               
 ******************************************************** */
+
 void PID_Output(void)
 {
 	T12_temp = get_T12_temp();//当前温度值

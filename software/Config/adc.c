@@ -129,15 +129,15 @@ int SearchIndex(u16 ipArray[], int start, int end ,int  value)  //（二分法）
 */ 
 u16 get_NTC_temp(void)
 {
-  float rThermistor = 0; //保存热敏电阻的电阻值
-  float tKelvin = 0; //以开尔文温度保存温度
-  float tCelsius = 0; //以摄氏温度保存温度
+	float rThermistor = 0; //保存热敏电阻的电阻值
+	float tKelvin = 0; //以开尔文温度保存温度
+	float tCelsius = 0; //以摄氏温度保存温度
 	NTC_Average = Get_Adc(6);
-  /*公式计算热敏电阻的电阻。*/ 
-  rThermistor = balanceR * NTC_Average/(ADC_max - NTC_Average); 
-  tKelvin =(beta * roomTemp)/(beta +(roomTemp * log(rThermistor / roomTempR)));  
-  tCelsius = tKelvin  -  273.15; //将开尔文转换为摄氏温度
-  return tCelsius;//以摄氏度返回温度
+	/*公式计算热敏电阻的电阻。*/ 
+	rThermistor = balanceR * NTC_Average/(ADC_max - NTC_Average); 
+	tKelvin =(beta * roomTemp)/(beta +(roomTemp * log(rThermistor / roomTempR)));  
+	tCelsius = tKelvin  -  273.15; //将开尔文转换为摄氏温度
+	return tCelsius;//以摄氏度返回温度
 }
 //获取输入电压值
 void get_Vin(void)
@@ -160,10 +160,19 @@ u16 get_T12_temp(void)
 {
 	u16 CurrentTemp=0;
 	get_T12_ADC();
-	if(T12_Average < TEMP100) CurrentTemp = (u16)map (T12_Average,21,TEMP100, 0, 100);
-	else if(T12_Average < TEMP200) CurrentTemp = (u16)map (T12_Average,TEMP100,TEMP200, 100, 200);
-	else if(T12_Average < TEMP300) CurrentTemp = (u16)map (T12_Average,TEMP200,TEMP300, 200, 300);
-	else CurrentTemp = (u16)map (T12_Average,TEMP300,TEMP420, 300, 420);
+	if(T12_Average < TEMP100) CurrentTemp = NTC_temp + (u16)map (T12_Average,0,TEMP100, 0, 100);
+	else if(T12_Average < TEMP200) CurrentTemp = NTC_temp + (u16)map (T12_Average,TEMP100,TEMP200, 100, 200);
+	else if(T12_Average < TEMP300) CurrentTemp = NTC_temp + (u16)map (T12_Average,TEMP200,TEMP300, 200, 300);
+	else CurrentTemp = NTC_temp + (u16)map (T12_Average,TEMP300,TEMP420, 300, 420);
+	u16 sum=0;
+	for(u8 i=0;i<TEMPARRLEN-1;i++)
+	{
+		tempArray[i] = tempArray[i+1];//元素前移
+		sum += tempArray[i+1];
+	}
+	tempArray[TEMPARRLEN-1] = CurrentTemp; //将开尔文转换为摄氏温度
+	sum += tempArray[TEMPARRLEN-1];
+	CurrentTemp = (u16)sum/TEMPARRLEN;//均值滤波
 //	printf("温度:%d\r\n",CurrentTemp);
 	return CurrentTemp;//以摄氏度返回温度
 }
