@@ -166,8 +166,7 @@ void OLED_Fill(u8 x1,u8 y1,u8 x2,u8 y2,u8 dot)
 	for(x=x1;x<=x2;x++)
 	{
 		for(y=y1;y<=y2;y++)OLED_DrawPoint(x,y,dot);
-	}													    
-	OLED_Refresh_Gram();//更新显示
+	}
 }
 
 //在指定位置显示一个字符,包括部分字符
