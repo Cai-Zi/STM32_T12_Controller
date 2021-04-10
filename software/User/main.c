@@ -44,12 +44,18 @@ void menuHandler(void);
 extern unsigned char logo[];
 char tempStr[10];//电池电压字符串
 float volatile VinVolt;//输入电压
-u16 volatile NTC_temp;//手柄温度
+u16 volatile NTC_temp,last_NTC_temp;//手柄温度
+
 u16 volatile T12_temp;//烙铁头温度
 u16 volatile tempArray[TEMPARRLEN];//温度数组，均值滤波
+u16 NTC_tempArray[NTC_TEMPARRLEN];//手柄温度数组，均值滤波
 u16 count;
+u8 err,err_count;
+u8 n;
 int main()
 {
+	u8 i;
+	u16 sum;
 	KEY_Init();//初始化按键GPIO
 	delay_init();//初始化延时函数
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置NVIC中断分组2，2位抢占优先级和2位子优先级
@@ -60,9 +66,9 @@ int main()
 	HEAT_Init();//加热头控制端初始化
 	OLED_Init();	//初始化OLED
 	set_Init();//读取用户设置数据
-	TIM4_Counter_Init(9999,719);//定时100ms中断一次
-	PID_Setup();//PID初始化
 	
+	PID_Setup();//PID初始化
+	TIM4_Counter_Init(99,719);//定时1ms中断一次
 	OLED_Clear();
 	OLED_DrawPointBMP(0,0,logo,128,64,1);//显示logo
 	OLED_Refresh_Gram();//刷新显存
@@ -71,21 +77,51 @@ int main()
 	//初始化温度
 	NTC_temp = get_NTC_temp();//读取手柄温度
 	T12_temp = NTC_temp;
-	for(u8 n=0; n<TEMPARRLEN; n++)
+	for(n=0; n<TEMPARRLEN; n++)
 	{
 		tempArray[n]=T12_temp;
 	}
 	
 	OLED_Fill(0,0,127,63,0);
 	while (1){
-		PID_Output();//运行PID
-		if(count%700==0)//更新一次
+		if(count%100==0)//更新一次
 		{
-			NTC_temp = get_NTC_temp();//获取一次手柄温度值
+			NTC_temp =  get_NTC_temp();//获取一次手柄温度值
 			get_Vin();//获取一次输入电压值
-			printf("ADC:%d\r\n",T12_Average);
+			
+			if(NTC_temp>=50)
+			{
+				NTC_temp =last_NTC_temp;
+			}
+			else
+			{
+			    last_NTC_temp = NTC_temp;
+			}
+			sum=0;
+			for(i=0;i<NTC_TEMPARRLEN-1;i++)
+			{
+				NTC_tempArray[i] = NTC_tempArray[i+1];//元素前移
+				sum += NTC_tempArray[i+1];
+			}
+			NTC_tempArray[NTC_TEMPARRLEN-1] = NTC_temp; 
+			sum += NTC_tempArray[NTC_TEMPARRLEN-1];
+			NTC_temp = (u16)sum/NTC_TEMPARRLEN;//均值滤波
+			//手柄连接检测
+			if(NTC_temp>=5&&NTC_temp<=50)
+			{
+				err_count=0;
+				err=0;
+			}
+			if((NTC_temp<5||NTC_temp>50)&&err==0)
+			{
+				err_count++;
+			}
+			if(err_count>=8)
+			{
+				err=1;//手柄未连接
+			}
 		}
-		if(nowMenuIndex==home && count%400==0)//更新一次home界面
+		if(nowMenuIndex==home && count%800==0)//更新一次home界面
 		{
 			homeWindow();//显示主界面
 			OLED_Refresh_Gram();//刷新显存
@@ -105,9 +141,10 @@ int main()
 			OLED_display();
 			STMFLASH_Write(FLASH_SAVE_ADDR,(u16 *)&setData,setDataSize);//写入FLASH
 		}
-		if(setData.sleepTime>0 && sleepCount>setData.sleepTime*60000) {sleepFlag=1;}
-		if(setData.shutTime>0 && shutCount>setData.shutTime*60000) {shutFlag=1;}
+		if(setData.sleepTime>0 && sleepCount>setData.sleepTime*600) {sleepFlag=1;}
+		if(setData.shutTime>0 && shutCount>setData.shutTime*600) {shutFlag=1;}
 		count++;
+		delay_us(100);
 	}
 }
 //菜单处理函数
