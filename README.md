@@ -5,10 +5,10 @@
 <br>工欲善其事，必先利其器。
 这个开源项目使用STM32F103C8T6-BluePill（8元包邮）来制作T12焊台控制器，助你拥有一个得心应手的焊台！！！<br>
 此控制器命名为T20，和J20航模遥控器做成一个系列，20也象征着开发时间。<br>
-原理图部分主要参考了sfrwmaker的开源仓库https://github.com/sfrwmaker/hakko_t12_stm32<br>
-程序部分使用keil5和stm32标准库编写，PID参数是白嫖的wagiminator的开源仓库https://github.com/wagiminator/ATmega-Soldering-Station<br>
+原理图部分主要参考了sfrwmaker的开源仓库[hakko_t12_stm32](https://github.com/sfrwmaker/hakko_t12_stm32)<br>
+程序部分使用keil5和stm32标准库编写，PID参数是白嫖的wagiminator的开源仓库[ATmega-Soldering-Station](https://github.com/wagiminator/ATmega-Soldering-Station)<br>
 - QQ群：1091996634，密码：J20
-- 教程：https://www.cnblogs.com/cai-zi/p/13812306.html
+- 教程：[博客](https://www.cnblogs.com/cai-zi/p/13812306.html)
 ## 元件清单(BOM)
 - （1）T12烙铁头（焊贴片用刀头，焊插件用尖头）
 - （2）烙铁手柄（笔者买的907手柄）、硅胶线（5线）、烙铁支架（带NTC电阻10k、震动开关）、航插（5线）
