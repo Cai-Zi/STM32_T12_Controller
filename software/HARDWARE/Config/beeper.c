@@ -19,19 +19,16 @@ void BEEPER_Init(void)
 //·äÃùÆ÷¶ÌÏìÒ»´Î
 void beeperOnce(void)
 {
-	u8 i;
+//	u8 i;
 	if (setData.beeperFlag) {
-//		for (i=0; i<200; i++) {
+//		for (i=0; i<20; i++) {
 //			Beeper = 1;
-//			delay_us(200);
+//			delay_us(120);
 //			Beeper = 0;
-//			delay_us(200);
+//			delay_us(125);
 //		}
-		for (i=0; i<255; i++) {
-			Beeper = 1;
-			delay_us(120);
-			Beeper = 0;
-			delay_us(125);
-		}
+		Beeper = 1;
+		delay_ms(10);
+		Beeper = 0;
 	}
 }

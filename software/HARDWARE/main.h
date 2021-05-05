@@ -50,7 +50,11 @@
 #define TIME_SHUT  20       // 关闭加热器的时间（分钟）
 
 // 是否显示百分比（0=禁用）
-#define percent_dis 1        // 是否显示pwm百分比   0不显示
+#define PWM_SHOW 1        // 是否显示pwm百分比   0不显示
+
+//版本信息
+#define VERSION ": V1.6"
+#define REA_TIME ": 2021.05.04"
 
 #define TEMPARRLEN 8 //温度数组元素个数
 #define NTC_TEMPARRLEN 15 //温度数组元素个数

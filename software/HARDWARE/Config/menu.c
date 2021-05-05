@@ -114,7 +114,7 @@ void homeWindow(void)
 		OLED_DrawPointNum(0,17,bai*6,1);//当前温度-百位
 		OLED_DrawPointNum(25,17,shi*6,1);//当前温度-十位
 		OLED_DrawPointNum(50,17,ge*6,1);//当前温度-个位
-		if(percent_dis)OLED_ShowNum(78,48,(u16)100*uk/255,3,16);//加热PWM百分比
+		if(PWM_SHOW)OLED_ShowNum(78,48,(u16)100*uk/255,3,16);//加热PWM百分比
 	}else
 	{
 		OLED_ShowString(0,17, (u8 *)"          ",16,1);
@@ -122,7 +122,7 @@ void homeWindow(void)
 		OLED_ShowString(0,48, (u8 *)"             ",16,1);
 	    OLED_ShowChineseWords(12,22,line1Index,3,1);
 	    OLED_ShowChineseWords(21,40,line2Index,2,1);
-//		if(percent_dis)OLED_DrawPointBMP(76,48,lock,20,14,1);//显示锁定
+//		if(PWM_SHOW)OLED_DrawPointBMP(76,48,lock,20,14,1);//显示锁定
 	}
 	
 	OLED_ShowNum(78,24,(u16)NTC_temp,2,16);//手柄温度
@@ -130,18 +130,18 @@ void homeWindow(void)
 
 	if(shutFlag||err==1){
 		OLED_DrawPointBMP(112,24,sleepSign,16,15,1);//休眠标志
-		if(percent_dis)OLED_ShowString(104,48, (u8 *)"OFF",16,1);//加热设置
+		if(PWM_SHOW)OLED_ShowString(104,48, (u8 *)"OFF",16,1);//加热设置
 		else OLED_ShowString(94,48, (u8 *)"OFF",16,1);//加热设置
 			
 	}
 	else if(sleepFlag){
 		OLED_DrawPointBMP(112,24,sleepSign,16,15,1);//加热标志
-		if(percent_dis)OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
+		if(PWM_SHOW)OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
 		else OLED_ShowString(88,48, (u8 *)" ON ",16,1);//加热设置
 	}
 	else{
 		OLED_DrawPointBMP(112,24,heatSign,16,15,1);//加热标志
-		if(percent_dis)OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
+		if(PWM_SHOW)OLED_ShowString(104,48, (u8 *)" ON",16,1);//加热设置
 		else OLED_ShowString(88,48, (u8 *)" ON ",16,1);//加热设置
 	}
 	
@@ -284,11 +284,11 @@ void menu_gybjTip(void){
 	
 	
 	OLED_ShowChineseWords(0,16,rqIndex,2,1);
-	OLED_ShowString(32,16,(u8*)": 2020.11.05",16,1);
+	OLED_ShowString(32,16,(u8*)REA_TIME,16,1);
 	
 	
 	OLED_ShowChineseWords(0,32,bbIndex,2,1);
-	OLED_ShowString(32,32,(u8*)": V1.2",16,1);
+	OLED_ShowString(32,32,(u8*)VERSION,16,1);
 	
 	OLED_ShowString(0,48,(u8*)"QQ",16,1);
 	OLED_ShowChinese(16,48,39,16,1);

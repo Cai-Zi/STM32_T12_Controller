@@ -74,6 +74,7 @@ int main()
 	OLED_Refresh_Gram();//刷新显存
 	delay_ms(1000);
 	
+	beeperOnce();
 	//初始化温度
 	NTC_temp = get_NTC_temp();//读取手柄温度
 	T12_temp = NTC_temp;
@@ -173,7 +174,7 @@ void menuHandler(void)
 			break;
 		}
 	}
-	else
+	else if(menuEvent[1]==BM_down)
 	{
 		switch(nowMenuIndex){
 			case home:
@@ -196,6 +197,7 @@ void menuHandler(void)
 			break;
 		}
 	}
+	else {}
 	if(setData.setTemp>TEMP_MAX) setData.setTemp=TEMP_MAX;
 	if(setData.setTemp<TEMP_MIN) setData.setTemp=TEMP_MIN;
 	if(setData.sleepTime>60) setData.sleepTime=60;
